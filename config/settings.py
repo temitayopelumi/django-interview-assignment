@@ -38,9 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #3rd party library
     'rest_framework',
     'drf_yasg',
-    'authentication'
+    #apps
+    'authentication',
+    'library'
 ]
 
 MIDDLEWARE = [
@@ -146,5 +149,15 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = "authentication.User"
 SWAGGER_SETTINGS = {
-    "DEFAULT_MODEL_RENDERING": "example"
+    "DEFAULT_MODEL_RENDERING": "example",
+    'SECURITY_DEFINITIONS': {
+      'Basic': {
+            'type': 'basic'
+      },
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
 }
