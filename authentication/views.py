@@ -1,14 +1,12 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from .serializers import RegisterMemberSerializer, RegisterLibrarianSerializer,LoginSerializer
+from .serializers import RegisterMemberSerializer, RegisterLibrarianSerializer, LoginSerializer
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenViewBase
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-
-
 
 # Create your views here.
 
@@ -22,7 +20,7 @@ register_response_schema = {
                     "id": 3,
                     "username": "string"
                 }
-}
+            }
         }
     ),
     "400": openapi.Response(
@@ -32,16 +30,16 @@ register_response_schema = {
                 "message": "failed",
                 "data": {
                     "username": [
-                    "This field is required."
+                        "This field is required."
                     ],
                     "password1": [
-                    "This field is required."
+                        "This field is required."
                     ],
                     "password2": [
-                    "This field is required."
+                        "This field is required."
                     ]
                 }
-    }
+            }
 
         }
     ),
@@ -51,32 +49,34 @@ login_response_schema = {
     "200": openapi.Response(
         description="custom 200 description",
         examples={
-            "application/json":{
+            "application/json": {
                 "message": "success",
                 "data": {
-                    "refresh": "eyJ0eXAiOiJKV1QiLCciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY2MTY3NDM4OSwiaWF0IjoxNjYxNTg3OTg5LCJqdGkiOiI2YmFlMWNkNzMxYmI0ODBiODQ4MTc1YTg2NDFhMzQ2MCIsInVzZXJfaWQiOjN9.4SMSPOVYXgX3vOV1R0qHtMPgASYtqZOepeoFR1eh4TI",
-                    "access": "eyJ0eXAiOiJKLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjYxNTkxNTg5LCJpYXQiOjE2NjE1ODc5ODksImp0aSI6IjIyZDkyYjAwMDEwNjQzYTViODNjNDU5OTJmZWUzMzBmIiwidXNlcl9pZCI6M30.k6uEHiwl6H0okwDG0UlMWAno4dIo_FNaL3ToHCVxHkU",
+                    "refresh": ".4SMSPOVYXgX3vOV1R0qHtMPgASYtqZOepeoFR1eh4TI",
+                    "access": "k6uEHiwl6H0okwDG0UlMWAno4dIo_FNaL3ToHCVxHkU",
                     "lifetime": 3600,
                     "role": "Member"
-                    }
-            }   
+                }
+            }
         }
     ),
     "401": openapi.Response(
         description="custom 400 description",
         examples={
             "application/json": {
-                "detail": "No active account found with the given credentials"    
+                "detail": "No active account found with the given credentials"
             }
 
         }
     ),
 }
 
+
 class RegisterMember(APIView):
     permission_classes = (AllowAny,)
 
-    @swagger_auto_schema(request_body=RegisterMemberSerializer, operation_description="Register a new member", responses=register_response_schema)
+    @swagger_auto_schema(request_body=RegisterMemberSerializer, operation_description="Register a new member",
+                         responses=register_response_schema)
     def post(self, request, *args, **kwargs):
         serializer = RegisterMemberSerializer(data=request.data)
         if serializer.is_valid():
@@ -89,10 +89,12 @@ class RegisterMember(APIView):
             {"message": "failed", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
         )
 
+
 class RegisterLibrarian(APIView):
     permission_classes = (AllowAny,)
 
-    @swagger_auto_schema(request_body=RegisterLibrarianSerializer, operation_description="Register a new librarian", responses=register_response_schema)
+    @swagger_auto_schema(request_body=RegisterLibrarianSerializer, operation_description="Register a new librarian",
+                         responses=register_response_schema)
     def post(self, request, *args, **kwargs):
         serializer = RegisterLibrarianSerializer(data=request.data)
         if serializer.is_valid():
@@ -109,8 +111,9 @@ class RegisterLibrarian(APIView):
 class Login(TokenViewBase):
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer
-    
-    @swagger_auto_schema(request_body=LoginSerializer, operation_description="Login a user", responses=login_response_schema)
+
+    @swagger_auto_schema(request_body=LoginSerializer, operation_description="Login a user",
+                         responses=login_response_schema)
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
