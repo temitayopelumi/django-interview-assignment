@@ -71,3 +71,15 @@ class RegisterLibrarianSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"username": "A user with this username exists"})
         except User.DoesNotExist:
             return attrs
+
+
+class LoginSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        refresh = self.get_token(self.user)
+        data["lifetime"] = int(refresh.access_token.lifetime.total_seconds())
+        if "LIBRARIAN" in self.user.groups.all():
+            data["role"] = "Librarian"
+        else:
+            data["role"] = "Member"
+        return data
