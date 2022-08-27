@@ -8,7 +8,6 @@ from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer,
     TokenRefreshSerializer,
 )
-
 from .models import User
 
 
@@ -27,8 +26,9 @@ class RegisterMemberSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             username=validated_data["username"],
             password=validated_data["password1"],
+            role="mem"
         )
-        
+
         return user
 
     def validate(self, attrs):
@@ -40,6 +40,7 @@ class RegisterMemberSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"username": "A user with this username exists"})
         except User.DoesNotExist:
             return attrs
+
 
 class RegisterLibrarianSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(max_length=128, min_length=8, write_only=True)
@@ -56,13 +57,12 @@ class RegisterLibrarianSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             username=validated_data["username"],
             password=validated_data["password1"],
-            group = "LIBRARIAN"
+            role="lib"
         )
-        
+
         return user
 
     def validate(self, attrs):
-
         if attrs.get("password1") != attrs.get("password2"):
             raise serializers.ValidationError({"password": "Password fields didn't match."})
         try:
@@ -71,3 +71,12 @@ class RegisterLibrarianSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"username": "A user with this username exists"})
         except User.DoesNotExist:
             return attrs
+
+
+class LoginSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        refresh = self.get_token(self.user)
+        data["lifetime"] = int(refresh.access_token.lifetime.total_seconds())
+        data["role"] = self.user.role
+        return data
