@@ -26,7 +26,7 @@ class RegisterMemberSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             username=validated_data["username"],
             password=validated_data["password1"],
-            role="mem"
+            role="Member"
         )
 
         return user
@@ -57,7 +57,7 @@ class RegisterLibrarianSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(
             username=validated_data["username"],
             password=validated_data["password1"],
-            role="lib"
+            role="Librarian"
         )
 
         return user

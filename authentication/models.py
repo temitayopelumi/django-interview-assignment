@@ -13,8 +13,8 @@ class CustomUserManager(UserManager):
 
 class User(AbstractUser):
     user_type = (
-        ('Member', 'mem'),
-        ("Librarian", 'lib')
+        ('Member', 'Member'),
+        ("Librarian", 'Librarian')
     )
     role = models.CharField(choices=user_type, max_length=20, default="mem")
     objects = CustomUserManager()

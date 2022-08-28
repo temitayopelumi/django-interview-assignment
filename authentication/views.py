@@ -7,69 +7,8 @@ from rest_framework_simplejwt.views import TokenViewBase
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-
+from swagger_responses import login_response_schema,register_response_schema
 # Create your views here.
-
-register_response_schema = {
-    "201": openapi.Response(
-        description="custom 201 description",
-        examples={
-            "application/json": {
-                "message": "success",
-                "data": {
-                    "id": 3,
-                    "username": "string"
-                }
-            }
-        }
-    ),
-    "400": openapi.Response(
-        description="custom 400 description",
-        examples={
-            "application/json": {
-                "message": "failed",
-                "data": {
-                    "username": [
-                        "This field is required."
-                    ],
-                    "password1": [
-                        "This field is required."
-                    ],
-                    "password2": [
-                        "This field is required."
-                    ]
-                }
-            }
-
-        }
-    ),
-}
-
-login_response_schema = {
-    "200": openapi.Response(
-        description="custom 200 description",
-        examples={
-            "application/json": {
-                "message": "success",
-                "data": {
-                    "refresh": ".4SMSPOVYXgX3vOV1R0qHtMPgASYtqZOepeoFR1eh4TI",
-                    "access": "k6uEHiwl6H0okwDG0UlMWAno4dIo_FNaL3ToHCVxHkU",
-                    "lifetime": 3600,
-                    "role": "Member"
-                }
-            }
-        }
-    ),
-    "401": openapi.Response(
-        description="custom 400 description",
-        examples={
-            "application/json": {
-                "detail": "No active account found with the given credentials"
-            }
-
-        }
-    ),
-}
 
 
 class RegisterMember(APIView):
@@ -82,11 +21,11 @@ class RegisterMember(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(
-                {"message": "success", "data": serializer.data},
+                {"detail": "You have registered successfully", "data": serializer.data},
                 status=status.HTTP_201_CREATED,
             )
         return Response(
-            {"message": "failed", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+            {"detail": "Bad request", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
         )
 
 
@@ -100,11 +39,11 @@ class RegisterLibrarian(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(
-                {"message": "success", "data": serializer.data},
+                {"detail": "Librarian registration successful", "data": serializer.data},
                 status=status.HTTP_201_CREATED,
             )
         return Response(
-            {"message": "failed", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+            {"detail": "Bad request", "data": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
         )
 
 
@@ -118,5 +57,5 @@ class Login(TokenViewBase):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(
-            {"status": 200, "message": "success", "data": serializer.validated_data}, status=status.HTTP_200_OK
+            {"status": 200, "detail": "Login successful", "data": serializer.validated_data}, status=status.HTTP_200_OK
         )
