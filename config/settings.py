@@ -164,8 +164,8 @@ SWAGGER_SETTINGS = {
    }
 }
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_URL = '/staticfiles/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
 
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = (
